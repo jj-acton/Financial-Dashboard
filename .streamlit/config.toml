@@ -1,0 +1,26 @@
+[theme]
+
+
+#000000, #fca17d, #daf0ee, #94d1be, #4c6663
+#6d435a, #466362, #ccd7e4, #d5c9df, #d77a61
+#ffd4ca, #4d7ea8, #def4c6, #955e42, #af5d63
+
+#B6EADA #000000 #22549e #301E67 #E2E2B6 #1A1A1D #758694
+
+primaryColor = "#fca17d"
+backgroundColor = "black"  
+secondaryBackgroundColor = "#1A1A1D" 
+textColor = "white"
+font = "sans-serif"
+baseRadius="medium"
+showWidgetBorder=true
+borderColor="#758694"
+baseFontSize= 16
+
+
+[theme.sidebar]
+backgroundColor="#1A1A1D"
+secondaryBackgroundColor="#B6EADA"
+baseRadius="medium"
+showWidgetBorder=true
+borderColor="black"
