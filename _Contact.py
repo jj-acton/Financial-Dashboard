@@ -36,7 +36,7 @@ with st.form(key="contact_form" ,clear_on_submit=True, enter_to_submit=False):
     
     if submitted : 
         c.execute("INSERT INTO contacts (name, email, company, message) VALUES (?, ?, ?, ?)", (name, email, company, message))
-        conn.commit()
+        conn.commit() 
         st.success("Your message has been sent. Thank You!")
 
 conn.close()
