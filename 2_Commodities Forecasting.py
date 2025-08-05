@@ -308,6 +308,7 @@ st.pyplot(fig)
 
 st.subheader("Creating the XGBoost Regression Model", divider=f"{DIVIDER_COLOUR}")
 justified_text(f"We will create an XGBoost regression model to predict the close price of the {option}. The model will be trained on the training set and evaluated on the test set. We will use the features created earlier as input to the model.Below you can tune the hyperparameters of the XGBoost regression model. The hyperparameters are the parameters that control the learning process of the model. The default values are usually a good starting point, but you can experiment with different values to see if you can improve the model's performance.")
+st.subheader(" ")
 
 with st.form("hyperparameter_form"):
     n_estimators = st.slider("Number of Estimators - Total number of decision trees the model will build.", min_value=100, max_value=2000, value=1000, step=50)

@@ -46,7 +46,7 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-st.image("/Users/jjacton/Desktop/Python/Streamlit_dashboard/images/Signal-Based Strategy Workflow - visual selection.svg")
+st.image("images/Signal-Based Strategy Workflow - visual selection.svg")
 
 st.subheader("Enter a Date Range to run strategy")
 date_range = st.date_input(
