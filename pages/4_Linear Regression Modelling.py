@@ -138,7 +138,7 @@ st.subheader(f'{indice_choice.upper()} is most correlated with {second_largest_k
 st.write(styled_corr)
 
 #Run OLS
-formula = f'{indice_choice}~{' + '.join(etf_removed_list)}'
+formula = f"{indice_choice}~{' + '.join(etf_removed_list)}"
 least_squares = smf.ols(formula=formula, data=Train).fit()
 st.subheader("Based on this dataset, we run an ordinary least squares regression on the training split using StatsModels.",divider=DIVIDER_COLOR)
 st.write(least_squares.summary())

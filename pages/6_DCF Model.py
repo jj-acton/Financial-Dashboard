@@ -218,8 +218,8 @@ if middle.button("Generate AI Insights"):
         f"Calculated Equity Value : ${calculated_equity_value}\n"
         f"Calculated Share Value : ${share_price}\n"
         f"Todays Share Price : ${current_stock_price:,.3f} \n"
-        f"Unlevered FCF (2025-2029) : {outputs.loc["Unlevered FCF"]}\n"
-        f"Present Value of FCF (2025-2029) : {outputs.loc["Present Value of FCF"]}\n"
+        f"Unlevered FCF (2025-2029) : {outputs.loc['Unlevered FCF']}\n"
+        f"Present Value of FCF (2025-2029) : {outputs.loc['Present Value of FCF']}\n"
         }
         ]
     )

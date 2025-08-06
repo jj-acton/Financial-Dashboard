@@ -13,7 +13,7 @@ st.set_page_config(
                 )
 
 DIVIDER_COLOUR = "blue"
-
+plt.style.use('dark_background')
 
 def justified_text(text: str):
     st.markdown(f"""
@@ -83,8 +83,20 @@ with st.form("Black_Scholes_form"):
 
 #calculate greeks and call/put 
 def calculate_prices_and_greeks(S_0, K, T, r, sigma_stationary):
+    if sigma_stationary <= 0 or T <= 0 or S_0 <= 0 or K <= 0 or r <= 0:
+        return {
+            "call_price": 0.0,
+            "put_price": 0.0,
+            "delta": 0.0,
+            "gamma": 0.0,
+            "vega": 0.0,
+            "theta": 0.0,
+            "rho": 0.0
+        }
+
     d1 = (np.log(S_0 / K) + (r + 0.5 * sigma_stationary ** 2) * T) / (sigma_stationary * np.sqrt(T))
     d2 = d1 - sigma_stationary * np.sqrt(T)
+
     return {
         "call_price": S_0 * norm.cdf(d1) - K * np.exp(-r * T) * norm.cdf(d2),
         "put_price": K * np.exp(-r * T) * norm.cdf(-d2) - S_0 * norm.cdf(-d1),
@@ -225,7 +237,7 @@ def plot_pnl_heatmap(calculate_prices_and_greeks, sigma_range, spot_range, K, T,
             call_price = prices["call_price"]
             put_price = prices["put_price"]
             call_pnls[i, j] = max(0, spot - K) - call_price
-            print(call_price)
+            
             put_pnls[i, j] = max(0, K - spot) - put_price
 
     # Normalize around 0 to split red/green

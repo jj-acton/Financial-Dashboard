@@ -71,7 +71,7 @@ ticker_dict = {
     "Uranium (ETF)": {"ticker": "URA", "unit": "USD (ETF price)"},
 }
 ticker = yf.Ticker(ticker_dict[option]['ticker'])
-print(ticker)
+
 unit = ticker_dict[option]['unit']
 
 st.write(f"You selected: {option}")
@@ -128,8 +128,8 @@ padding = (y_max - y_min) * 0.15 if (y_max - y_min) > 0 else 1
 y_scale = alt.Scale(domain=[y_min - padding, y_max + padding])
 
 chart = alt.Chart(data).mark_line(color='#FCA17D').encode(
-    x=alt.X('Date:T', title='Date', axis=alt.Axis(labelAngle=-45)),
-    y=alt.Y('Close:Q', title=f'Price ({unit})', scale=y_scale)
+    x=alt.X("Date:T", title="Date", axis=alt.Axis(labelAngle=-45)),
+    y=alt.Y("Close:Q", title=f"Price ({unit})", scale=y_scale)
 ).properties(
     width=700,
     height=400,
@@ -440,7 +440,7 @@ st.pyplot(fig)
 #Convert timestamp to DDMMYYYY
 date_str = future_with_features["Date"].iloc[-1].date().strftime('%d/%m/%Y')
 
-st.subheader(f"Using the XGBoost model we can see that the model predicts the price of {option} will be ${future_with_features["Future Prediction"].iloc[-1]:.2f} on the {date_str} using a lookback training period of {lookback}.")
+st.subheader(f"Using the XGBoost model we can see that the model predicts the price of {option} will be ${future_with_features['Future Prediction'].iloc[-1]:.2f} on the {date_str} using a lookback training period of {lookback}.")
 
 st.subheader("Limitations", divider=DIVIDER_COLOUR)
 justified_text("While the XGBoost model captures short and medium-term trends using engineered lag features, it is still prone to cumulative bias in sequential predictions and may overfit to recent patterns in certain folds. The model assumes feature stability over time, which may not hold during structural shifts or periods of high volatility. It also does not account for market sentiment, speculation, or external shocks, which can significantly influence price movements.")
