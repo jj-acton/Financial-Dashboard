@@ -212,11 +212,11 @@ ax1.legend()
 ax2.legend()
 st.pyplot(fig)
 
-st.subheader(f'Total profit made simulating the Training data: ${Train['Profit'].sum().round(2)}')
-st.subheader(f'Total profit made Buying and Holding the Training data: ${Train[f'{indice_choice}'].sum().round(2)}')
+st.subheader(f"Total profit made simulating the Training data: ${Train['Profit'].sum().round(2)}")
+st.subheader(f"Total profit made Buying and Holding the Training data: ${Train[f'{indice_choice}'].sum().round(2)}")
 
-st.subheader(f'Total profit made simulating the Test data: ${Test['Profit'].sum().round(2)}')
-st.subheader(f'Total profit made Buying and Holding the Test data: ${Test[f'{indice_choice}'].sum().round(2)}')
+st.subheader(f"Total profit made simulating the Test data: ${Test['Profit'].sum().round(2)}")
+st.subheader(f"Total profit made Buying and Holding the Test data: ${Test[f'{indice_choice}'].sum().round(2)}")
 
 Train['Open'] = data.loc[Train.index, 'Open']
 Test['Open'] = data.loc[Test.index, 'Open']
