@@ -14,3 +14,4 @@ xgboost
 openai
 scikit-learn
 sigfig
+alpaca
