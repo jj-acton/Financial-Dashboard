@@ -18,6 +18,8 @@ st.set_page_config(
 
 
 DIVIDER_COLOR = 'blue'
+plt.style.use('dark_background')
+
 st.title("Linear Regression Modelling")
 st.subheader("This page allows you to perform multivariate linear regression analysis on financial data.", divider=DIVIDER_COLOR)
 st.write("Linear regression is a statistical method used to model the relationship between a dependent variable and one or more independent variables. It is widely used in finance to analyse trends and make predictions based on historical data.")
@@ -136,7 +138,7 @@ st.subheader(f'{indice_choice.upper()} is most correlated with {second_largest_k
 st.write(styled_corr)
 
 #Run OLS
-formula = f'{indice_choice}~{'+'.join(etf_removed_list)}'
+formula = f'{indice_choice}~{' + '.join(etf_removed_list)}'
 least_squares = smf.ols(formula=formula, data=Train).fit()
 st.subheader("Based on this dataset, we run an ordinary least squares regression on the training split using StatsModels.",divider=DIVIDER_COLOR)
 st.write(least_squares.summary())

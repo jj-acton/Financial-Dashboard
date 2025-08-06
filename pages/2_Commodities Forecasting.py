@@ -384,7 +384,7 @@ feature_importance = pd.DataFrame(data = regression_model.feature_importances_,
             index=FEATURES, columns=["Importance"]).sort_values(by="Importance", ascending=True)
 
 st.bar_chart(feature_importance, use_container_width=True, height=500, color='#FCA17D', horizontal=True)
-st.write(f"The above chart shows the feature importance scores for the XGBoost regression model. The features are sorted in ascending order of importance. Here we can see that the {feature_importance["Importance"].idxmax()} has the highest importance score of {feature_importance.max().values[0]:.3f}, indicating that it has the highest impact on the model's predictions.")
+st.write(f"The above chart shows the feature importance scores for the XGBoost regression model. The features are sorted in ascending order of importance. Here we can see that the {feature_importance['Importance'].idxmax()} has the highest importance score of {feature_importance.max().values[0]:.3f}, indicating that it has the highest impact on the model's predictions.")
 
 st.subheader(f"Predicting 30 Day Close Price for {option}", divider=DIVIDER_COLOUR)
 st.write("Now that we have seen the performance of the XGBoost regression model, we can use it to make predictions for the next 30 days.")

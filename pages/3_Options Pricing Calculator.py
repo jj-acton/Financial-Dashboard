@@ -14,6 +14,7 @@ st.set_page_config(
 
 DIVIDER_COLOUR = "blue"
 
+
 def justified_text(text: str):
     st.markdown(f"""
         <div style="text-align: justify;">

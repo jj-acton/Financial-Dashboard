@@ -14,7 +14,9 @@ st.set_page_config(page_title="Stock Analysis",
                 layout="wide"
                 )
 
-DIVIDER_COLOUR = 'blue'  
+DIVIDER_COLOUR = 'blue'
+plt.style.use('dark_background')
+ 
 API_KEY = st.secrets["alpaca"]["api_key"]
 SECRET_KEY = st.secrets["alpaca"]["secret_key"]
 client = StockHistoricalDataClient(API_KEY, SECRET_KEY)
