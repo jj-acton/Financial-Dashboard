@@ -82,10 +82,10 @@ data = yf.download(yahoo_ticker, start=date_range[0], end=date_range[1])[['Open'
 data = pd.DataFrame(data)
 trading_day_count = len(data)
 
-st.write(f'Number of trading days within date range: {trading_day_count}')
+st.write(f"Number of trading days within date range: {trading_day_count}")
 #Shifts down 1 column as top column is just indice_choice name
 data.columns = data.columns.droplevel(1)
-st.subheader(f'{indice_choice.upper()} Market Data',divider=DIVIDER_COLOR)
+st.subheader(f"{indice_choice.upper()} Market Data",divider=DIVIDER_COLOR)
 
 st.dataframe(data)
 st.subheader(" ")
@@ -99,14 +99,14 @@ etf_removed_list = list(ticker_dict.keys())
 etf_removed_list.remove(indice_choice)
 
 #gets 1day lag data
-indicepanel[f'{indice_choice}'] = data['Open'].shift(-1) - data['Open']
-indicepanel[f'{indice_choice}_lag1'] = indicepanel[f'{indice_choice}'].shift(1)
+indicepanel[f"{indice_choice}"] = data['Open'].shift(-1) - data['Open']
+indicepanel[f"{indice_choice}_lag1"] = indicepanel[f"{indice_choice}"].shift(1)
 
 #get all other ticker data
 for ticker in etf_removed_list:
     ticker_yahoo = ticker_dict[ticker]
     data_temp = yf.download(ticker_yahoo, start=date_range[0], end=date_range[1])[['Open']]#type:ignore
-    indicepanel[f'{ticker}'] = data_temp['Open'] - data_temp['Open'].shift(1)
+    indicepanel[f"{ticker}"] = data_temp['Open'] - data_temp['Open'].shift(1)
 
 indicepanel = indicepanel.fillna(method='ffill')#type:ignore
 indicepanel = indicepanel.dropna()
@@ -115,7 +115,7 @@ indicepanel = indicepanel.dropna()
 Train = indicepanel.iloc[0:int(data.shape[0]/2-1), :]
 Test = indicepanel.iloc[int(data.shape[0]/2-1):, :]
 sm = scatter_matrix(Train, figsize=(10, 10))
-st.subheader(f'Correlation of {indice_choice.upper()} with other indices using training data.', divider=DIVIDER_COLOR)
+st.subheader(f"Correlation of {indice_choice.upper()} with other indices using training data.", divider=DIVIDER_COLOR)
 st.pyplot(plt.gcf())
 #includes only numeric data e.g removes date
 numeric_data = Train.select_dtypes(include=['number'])
@@ -134,7 +134,7 @@ corr_array =  Train.corr()[indice_choice]
 #gets second largest key and value as largest key value will be itself and equal to 1
 second_largest_key = corr_array.nlargest(2).index[1]
 second_largest_num = corr_array.nlargest(2).iloc[1]
-st.subheader(f'{indice_choice.upper()} is most correlated with {second_largest_key.upper()} and has a correlation score of : {second_largest_num.round(4)}')
+st.subheader(f"{indice_choice.upper()} is most correlated with {second_largest_key.upper()} and has a correlation score of : {second_largest_num.round(4)}")
 st.write(styled_corr)
 
 #Run OLS
@@ -162,31 +162,31 @@ col6.metric("Jarque-Bera", f"{jb_stat:.2f}", help="Tests normality of residuals 
 
 
 
-Train[f'Predicted_{indice_choice}'] = least_squares.predict(Train)
-Test[f'Predicted_{indice_choice}'] = least_squares.predict(Test)
+Train[f"Predicted_{indice_choice}"] = least_squares.predict(Train)
+Test[f"Predicted_{indice_choice}"] = least_squares.predict(Test)
 
 
-st.header(f'Predicted vs Actual {indice_choice.upper()}',divider=DIVIDER_COLOR)
+st.header(f"Predicted vs Actual {indice_choice.upper()}",divider=DIVIDER_COLOR)
 st.write("This scatter plot shows how well the model’s predictions match the actual values for the chosen index in the training data. Each point represents one observation, with the actual value on the X-axis and the predicted value on the Y-axis. The red dashed line marks where predictions perfectly match the actual values. Points near this line indicate accurate predictions, while points farther away show larger errors. This helps you quickly see how closely the model fits the data.")
 fig, ax = plt.subplots()
-ax.scatter(Train[f'{indice_choice}'], Train[f'Predicted_{indice_choice}'], alpha=0.4)
+ax.scatter(Train[f"{indice_choice}"], Train[f"Predicted_{indice_choice}"], alpha=0.4)
 ax.axline((0, 0), slope=1, linestyle="--", color="red") # reference line y = x
 plt.xlabel(f"Actual {indice_choice.upper()}")
 plt.ylabel(f"Predicted {indice_choice.upper()}")
 st.pyplot(fig)
 
-st.header(f'Profit of Signal Based Strategy',divider=DIVIDER_COLOR)
+st.header(f"Profit of Signal Based Strategy",divider=DIVIDER_COLOR)
 st.write("As the strategy calculates the difference between the next day’s and today’s opening prices to measure the actual return. A positive return means the price increased, and a negative return means it decreased. By shifting this return by one day, the model uses the previous day’s return as a signal. If the lagged return is positive, the strategy sets the Order column to 1, indicating a buy (long) position. If it’s negative or zero, the Order is set to -1, signaling a sell (short) position. This approach turns past price movements into actionable trading decisions.")
 
 #Train data - if value is positive 
-Train['Order'] = [1 if sig>0 else -1 for sig in Train[f'Predicted_{indice_choice}']]
-Train['Profit'] = Train[f'{indice_choice}'] * Train['Order']
+Train['Order'] = [1 if sig>0 else -1 for sig in Train[f"Predicted_{indice_choice}"]]
+Train['Profit'] = Train[f"{indice_choice}"] * Train['Order']
 Train['Wealth'] = Train['Profit'].cumsum()
 train_df = pd.DataFrame(Train)
 
 #Test data
-Test['Order'] = [1 if sig>0 else -1 for sig in Test[f'Predicted_{indice_choice}']]
-Test['Profit'] = Test[f'{indice_choice}'] * Test['Order']
+Test['Order'] = [1 if sig>0 else -1 for sig in Test[f"Predicted_{indice_choice}"]]
+Test['Profit'] = Test[f"{indice_choice}"] * Test['Order']
 Test['Wealth'] = Test['Profit'].cumsum()
 test_df = pd.DataFrame(Test)
 
@@ -199,15 +199,15 @@ with col2:
     st.write(test_df[[f"{indice_choice}", f"{indice_choice}_lag1", "Order", "Profit", "Wealth"]])
 
 #wealth plot
-fig, (ax1, ax2) = plt.subplots(2, figsize=(10,10), layout='constrained')
-fig.suptitle(f'{indice_choice.upper()} Training and Test data vs Buy and Hold Cumulative Profit')
-ax1.plot(Train['Wealth'], label = 'Signal Based Train Strategy')
-ax1.plot(Train[f'{indice_choice}'].cumsum(), label = 'Buy and Hold')
-ax1.set(xlabel='Date', ylabel='Cumulative Profit ($)')
+fig, (ax1, ax2) = plt.subplots(2, figsize=(10,10), layout="constrained")
+fig.suptitle(f"{indice_choice.upper()} Training and Test data vs Buy and Hold Cumulative Profit")
+ax1.plot(Train['Wealth'], label = "Signal Based Train Strategy")
+ax1.plot(Train[f"{indice_choice}"].cumsum(), label = "Buy and Hold")
+ax1.set(xlabel="Date", ylabel="Cumulative Profit ($)")
 
-ax2.plot(Test['Wealth'], label = 'Signal Based Test Strategy')
-ax2.plot(Test[f'{indice_choice}'].cumsum(), label = 'Buy and Hold')
-ax2.set(xlabel='Date', ylabel='Cumulative Profit ($)')
+ax2.plot(Test['Wealth'], label = "Signal Based Test Strategy")
+ax2.plot(Test[f"{indice_choice}"].cumsum(), label = "Buy and Hold")
+ax2.set(xlabel="Date", ylabel="Cumulative Profit ($)")
 ax1.legend()
 ax2.legend()
 st.pyplot(fig)
@@ -224,7 +224,7 @@ Test['Open'] = data.loc[Test.index, 'Open']
 Train['Wealth'] = Train['Wealth'] + Train.loc[Train.index[0], 'Open']
 Test['Wealth'] = Test['Wealth'] + Test.loc[Test.index[0], 'Open']
 
-st.header(f'Sharpe Ratio for {indice_choice.upper()}', divider=DIVIDER_COLOR)
+st.header(f"Sharpe Ratio for {indice_choice.upper()}", divider=DIVIDER_COLOR)
 st.write('The Sharpe Ratio is commonly used to gauge the performance of an investment by adjusting for its risk. The higher the ratio, the greater the investment return relative to the amount of risk taken, and thus, the better the investment. The formula to calculate the Sharpe ratio is:')
 st.latex(r'''
         \text{Sharpe ratio} = \frac{R_p-R_f}{\sigma_p}
@@ -237,14 +237,14 @@ st.write('$\sigma_p$ = standard deviation of the portfolio\'s excess return ')#t
 col1, col2 = st.columns(2)
 
 with col1:
-    st.subheader(f'Training Data')
+    st.subheader(f"Training Data")
     Train['Log Return'] = np.log(Train['Wealth']) - np.log(Train['Wealth'].shift(1))
     dailyr = Train['Log Return'].dropna()
     daily_sharpe_ratio = dailyr.mean()/dailyr.std(ddof=1)
     sharpe_ratio = (np.sqrt(trading_day_count/365))*dailyr.mean()/dailyr.std(ddof=1)
 
-    st.write(f'- The Daily Sharpe ratio of {indice_choice.upper()} is: {daily_sharpe_ratio.round(3)}')
-    st.write(f'- The Sharpe ratio from the period {date_range[0]} to {date_range[1]} is {sharpe_ratio.round(3)}')#type:ignore
+    st.write(f"- The Daily Sharpe ratio of {indice_choice.upper()} is: {daily_sharpe_ratio.round(3)}")
+    st.write(f"- The Sharpe ratio from the period {date_range[0]} to {date_range[1]} is {sharpe_ratio.round(3)}")#type:ignore
 
 with col2:
     st.subheader('Test Data')
@@ -253,12 +253,12 @@ with col2:
     daily_sharpe_ratio = dailyr.mean()/dailyr.std(ddof=1)
     sharpe_ratio = (np.sqrt(trading_day_count/365))*dailyr.mean()/dailyr.std(ddof=1)
 
-    st.write(f'- The Daily Sharpe ratio of {indice_choice.upper()} is: {daily_sharpe_ratio.round(3)}')
-    st.write(f'- The Sharpe ratio from the period {date_range[0]} to {date_range[1]} is {sharpe_ratio.round(3)}')#type:ignore
+    st.write(f"- The Daily Sharpe ratio of {indice_choice.upper()} is: {daily_sharpe_ratio.round(3)}")
+    st.write(f"- The Sharpe ratio from the period {date_range[0]} to {date_range[1]} is {sharpe_ratio.round(3)}")#type:ignore
 
-st.header(f'Maximum Drawdown for {indice_choice.upper()}', divider=DIVIDER_COLOR)
-st.write('A maximum drawdown (MDD) is the maximum observed loss from a peak to a trough of a portfolio, before a new peak is attained. Maximum drawdown is an indicator of downside risk over a specified time period.')
-st.write('It is calculated by the following formula:')
+st.header(f"Maximum Drawdown for {indice_choice.upper()}", divider=DIVIDER_COLOR)
+st.write("A maximum drawdown (MDD) is the maximum observed loss from a peak to a trough of a portfolio, before a new peak is attained. Maximum drawdown is an indicator of downside risk over a specified time period.")
+st.write("It is calculated by the following formula:")
 st.latex(r'''
         \text{MDD} = \frac{\text{Trough value} - \text{Peak value}}{\text{Peak value}}\times 100\%
         ''')
@@ -270,7 +270,7 @@ st.subheader(f"- Maximum Drawdown in Training data is {Train['Drawdown'].max()*1
 #Test data
 Test['Peak'] = Test['Wealth'].cummax()
 Test['Drawdown'] = (Test['Peak'] - Test['Wealth'])/Test['Peak']
-st.subheader(f'- Maximum Drawdown in Test data is {Test['Drawdown'].max()*100:.2f}%')
+st.subheader(f"- Maximum Drawdown in Test data is {Test['Drawdown'].max()*100:.2f}%")
 
 st.header("Limitations of Model", divider=DIVIDER_COLOR)
 st.subheader("1. No Transaction Costs or Slippage")
