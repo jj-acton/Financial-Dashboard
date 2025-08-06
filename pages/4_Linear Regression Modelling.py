@@ -265,7 +265,7 @@ st.latex(r'''
 #Training data
 Train['Peak'] = Train['Wealth'].cummax()
 Train['Drawdown'] = (Train['Peak'] - Train['Wealth'])/Train['Peak']
-st.subheader(f'- Maximum Drawdown in Training data is {Train['Drawdown'].max()*100:.2f}%')
+st.subheader(f"- Maximum Drawdown in Training data is {Train['Drawdown'].max()*100:.2f}%")
 
 #Test data
 Test['Peak'] = Test['Wealth'].cummax()
