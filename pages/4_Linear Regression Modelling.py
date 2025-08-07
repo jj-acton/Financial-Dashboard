@@ -80,7 +80,7 @@ indice_choice = st.selectbox('Pick an Index or Security to use for the signal ba
 
 trading_day_count = {}
 yahoo_ticker = ticker_dict[indice_choice]
-data = yf.download(yahoo_ticker, start=date_range[0], end=date_range[1])[['Open', 'Close', 'High', 'Low', 'Volume']] #type:ignore
+data = yf.download(yahoo_ticker, start=date_range[0], end=date_range[1])[['Open', 'Close', 'High', 'Low', 'Volume']]#type:ignore
 data = pd.DataFrame(data)
 trading_day_count = len(data)
 
@@ -178,14 +178,12 @@ plt.ylabel(f"Predicted {indice_choice.upper()}")
 st.pyplot(fig)
 
 st.header(f"Profit of Signal Based Strategy",divider=DIVIDER_COLOR)
-st.write("As the strategy calculates the difference between the next day’s and today’s opening prices to measure the actual return. A positive return means the price increased, and a negative return means it decreased. By shifting this return by one day, the model uses the previous day’s return as a signal. If the lagged return is positive, the strategy sets the Order column to 1, indicating a buy (long) position. If it’s negative or zero, the Order is set to -1, signaling a sell (short) position. This approach turns past price movements into actionable trading decisions.")
 
 #Train data - if value is positive 
 Train['Order'] = [1 if sig>0 else -1 for sig in Train[f"Predicted_{indice_choice}"]]
 Train['Profit'] = Train[f"{indice_choice}"] * Train['Order']
 Train['Wealth'] = Train['Profit'].cumsum()
 train_df = pd.DataFrame(Train)
-print(Train['spy'].head(10))
 
 #Test data
 Test['Order'] = [1 if sig>0 else -1 for sig in Test[f"Predicted_{indice_choice}"]]

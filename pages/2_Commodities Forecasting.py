@@ -72,7 +72,7 @@ ticker_dict = {
     "Lithium (ETF)": {"ticker": "LIT", "unit": "USD (ETF price)"},
     "Uranium (ETF)": {"ticker": "URA", "unit": "USD (ETF price)"},
 }
-ticker = yf.Ticker(ticker_dict[option]['ticker']) # type: ignore
+ticker = yf.Ticker(ticker_dict[option]['ticker'])#type:ignore
 
 unit = ticker_dict[option]['unit']
 
