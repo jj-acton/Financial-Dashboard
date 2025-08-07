@@ -72,7 +72,7 @@ ticker_dict = {
     "Lithium (ETF)": {"ticker": "LIT", "unit": "USD (ETF price)"},
     "Uranium (ETF)": {"ticker": "URA", "unit": "USD (ETF price)"},
 }
-ticker = yf.Ticker(ticker_dict[option]['ticker'])
+ticker = (ticker_dict[option]['ticker'])
 
 unit = ticker_dict[option]['unit']
 
@@ -84,8 +84,12 @@ col1, col2, col3, col4, col5 = st.columns(5, gap="large", vertical_alignment="ce
 
 # Fetch historical data for the selected commodity
 # Get 7 days just incase theres missing data or weekend 
-history = ticker.history(period="7d")
-if history.empty or 'Close' not in history.columns:
+try:
+    history = yf.download(ticker, period="7d")
+except Exception as e:
+    st.error(f"Failed to fetch data for {ticker}: {e}")
+    st.stop()
+if history is None or history.empty or 'Close' not in history.columns:
     st.error("No historical data available for the selected commodity.")
     st.stop()
 else:
@@ -102,41 +106,38 @@ previous_close = history["Close"].dropna().iloc[-2]
 change_in_price = most_recent_close - previous_close
 col2.metric(label="Price Difference (1 Day)", value=f"${change_in_price:.2f}", delta=f"{change_in_price/most_recent_close:.2%}",)
 
-#YTD change
-price_1year_ago = ticker.history(period="1y")['Close'].iloc[0]
-yoy_change = most_recent_close - price_1year_ago
+data_1year = yf.download(ticker, period="1y", progress=False)
+if data_1year is None or data_1year.empty or 'Close' not in data_1year.columns:
+    st.error("Couldn't fetch 1 year data for high/low")
+else:
+    high = data_1year['Close'].max()
+    low = data_1year['Close'].min()
+    col4.metric(label="52 Week High", value=f"${high:.2f}")
+    col5.metric(label="52 Week Low", value=f"${low:.2f}")
 
-#YoY change
-col3.metric(label="Price Difference (YoY)", value=f"${yoy_change:.2f}", delta=f"{(most_recent_close - price_1year_ago)/price_1year_ago:.2%}",)
+# display 1 year chart with selectable timeframe
+timeframe = st.radio("Select Timeframe", ("5d", "1mo", "3mo", "6mo", "1y", "5y", "YTD", "Max"), horizontal=True, key="timeframe", index=4)
 
-#52 week high
-high = ticker.history(period="1y")['Close'].max()
-col4.metric(label="52 Week High", value=f"${high:.2f}",)
-
-#52 week low 
-low = ticker.history(period=f"1y")['Close'].min()
-col5.metric(label="52 Week Low", value=f"${low:.2f}",)
-
-#display 1 year chart
-timeframe = st.radio("Select Timeframe", ("5d", "1mo", "3mo", "6mo", "1y", "5y", "YTD", "Max"), horizontal=True, key="timeframe",index=4 )
-
-data = ticker.history(period=f"{timeframe.lower()}")
+data = yf.download(ticker, period=timeframe.lower(), progress=False)
+if data is None or data.empty:
+    st.error(f"No data available for timeframe: {timeframe}")
+else:
 # Creates index column for dataframe
-data.reset_index(inplace=True)
+    data.reset_index(inplace=True)
 
-y_min = data["Close"].min()
-y_max = data["Close"].max()
-padding = (y_max - y_min) * 0.15 if (y_max - y_min) > 0 else 1
-y_scale = alt.Scale(domain=[y_min - padding, y_max + padding])
+    y_min = data["Close"].min()
+    y_max = data["Close"].max()
+    padding = (y_max - y_min) * 0.15 if (y_max - y_min) > 0 else 1
+    y_scale = alt.Scale(domain=[y_min - padding, y_max + padding])
 
-chart = alt.Chart(data).mark_line(color='#FCA17D').encode(
-    x=alt.X("Date:T", title="Date", axis=alt.Axis(labelAngle=-45)),
-    y=alt.Y("Close:Q", title=f"Price ({unit})", scale=y_scale)
-).properties(
-    width=700,
-    height=400,
-)
-st.altair_chart(chart, use_container_width=True)
+    chart = alt.Chart(data).mark_line(color='#FCA17D').encode(
+        x=alt.X("Date:T", title="Date", axis=alt.Axis(labelAngle=-45)),
+        y=alt.Y("Close:Q", title=f"Price ({unit})", scale=y_scale)
+    ).properties(
+        width=700,
+        height=400,
+    )
+    st.altair_chart(chart, use_container_width=True)
 
 # Display latest news by querying keywords
 st.header(f"Latest News on {option}")
@@ -219,33 +220,36 @@ justified_text(f"For this example, we use two years of historical data to foreca
 
 lookback = st.radio("Lookback Period", ("6mo", "1y", "2y", "3y","5y","10y"), horizontal=True, key="lookback", index=2 )
 st.write("---")
-df = ticker.history(period=f"{lookback}")
-df = df[["Close"]].reset_index()
+df = yf.download(ticker,period=f"{lookback}", progress=False)
+if df is None or df.empty:
+    st.error(f"No data found for {ticker} with lookback {lookback}")
+else:
+    df = df[["Close"]].reset_index()
 
-st.line_chart(df.set_index("Date")["Close"],
+    st.line_chart(df.set_index("Date")["Close"],
             use_container_width=True, height=500,
             x_label="Date",
             y_label=f"Close Price of {option} ({unit})",
             color='#FCA17D'
 )
-st.subheader("Time Series Cross Validation", divider=f"{DIVIDER_COLOUR}")
-justified_text("We use TimeSeriesSplit function from scikit-learn library to split our historical data into training and testing sets in a way that uses chronological order to our advantage. Unlike typical machine learning splits that shuffle data randomly, time series data must always predict the future using only the past. TimeSeriesSplit works by creating multiple splits where each training set includes all data up to a certain point in time, and the test set includes the next block of future data. This helps us evaluate how well our model can generalise to unseen future periods without introducing any look-ahead bias. It mirrors how we would use the model in reality — always training on the past to forecast what comes next. For this example, we will use a 5-fold time series cross-validation approach to ensure that our model is robust and can generalise well to unseen data.")
-st.write("---")
+    st.subheader("Time Series Cross Validation", divider=f"{DIVIDER_COLOUR}")
+    justified_text("We use TimeSeriesSplit function from scikit-learn library to split our historical data into training and testing sets in a way that uses chronological order to our advantage. Unlike typical machine learning splits that shuffle data randomly, time series data must always predict the future using only the past. TimeSeriesSplit works by creating multiple splits where each training set includes all data up to a certain point in time, and the test set includes the next block of future data. This helps us evaluate how well our model can generalise to unseen future periods without introducing any look-ahead bias. It mirrors how we would use the model in reality — always training on the past to forecast what comes next. For this example, we will use a 5-fold time series cross-validation approach to ensure that our model is robust and can generalise well to unseen data.")
+    st.write("---")
 
-tss = TimeSeriesSplit(n_splits=5)
-fig, axs = plt.subplots(5, 1, figsize = (10,15), sharex=True)
-for i, (train_index, validate_index) in enumerate(tss.split(df)):
-    train = df.iloc[train_index]
-    validate = df.iloc[validate_index]
-    axs[i].plot(train["Date"], train["Close"], label="Train")
-    axs[i].plot(validate["Date"], validate["Close"], label="Validate")
-    axs[i].set_title(f"Fold {i+1}")
-    axs[i].set_ylabel(f"Close Price ({unit})")
-    axs[i].legend()
-    axs[i].axvline(train["Date"].iloc[-1], color='white', linestyle='--')
-axs[i].set_xlabel("Date")
-st.pyplot(fig)
-st.write("---")
+    tss = TimeSeriesSplit(n_splits=5)
+    fig, axs = plt.subplots(5, 1, figsize = (10,15), sharex=True)
+    for i, (train_index, validate_index) in enumerate(tss.split(df)):
+        train = df.iloc[train_index]
+        validate = df.iloc[validate_index]
+        axs[i].plot(train["Date"], train["Close"], label="Train")
+        axs[i].plot(validate["Date"], validate["Close"], label="Validate")
+        axs[i].set_title(f"Fold {i+1}")
+        axs[i].set_ylabel(f"Close Price ({unit})")
+        axs[i].legend()
+        axs[i].axvline(train["Date"].iloc[-1], color='white', linestyle='--')
+    axs[i].set_xlabel("Date")
+    st.pyplot(fig)
+    st.write("---")
 
 st.subheader("Addition of Features",  divider=f"{DIVIDER_COLOUR}")
 justified_text("We will create additional features from the date column in the DataFrame. These features will include the day of the week, day of the month, month, quarter, year, and day of the year. This is done to help the model learn patterns in the data that are related to time. Additionally, we will add lag features to the DataFrame. Lag features are previous values of the target variable (in this case daily close price) that can help the model learn patterns in the data that are related to time. For example, the lag feature for 1 day will be the Close Price from the previous day, the lag feature for 2 days will be the Close Price from two days ago, and so on. ")
