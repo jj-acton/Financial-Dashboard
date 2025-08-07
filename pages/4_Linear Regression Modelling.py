@@ -80,7 +80,7 @@ indice_choice = st.selectbox('Pick an Index or Security to use for the signal ba
 
 trading_day_count = {}
 yahoo_ticker = ticker_dict[indice_choice]
-data = yf.download(yahoo_ticker, start=date_range[0], end=date_range[1])[['Open', 'Close', 'High', 'Low', 'Volume']]#type:ignore
+data = yf.download(yahoo_ticker, start=date_range[0], end=date_range[1])[['Open', 'Close', 'High', 'Low', 'Volume']] #type:ignore
 data = pd.DataFrame(data)
 trading_day_count = len(data)
 
@@ -185,6 +185,7 @@ Train['Order'] = [1 if sig>0 else -1 for sig in Train[f"Predicted_{indice_choice
 Train['Profit'] = Train[f"{indice_choice}"] * Train['Order']
 Train['Wealth'] = Train['Profit'].cumsum()
 train_df = pd.DataFrame(Train)
+print(Train['spy'].head(10))
 
 #Test data
 Test['Order'] = [1 if sig>0 else -1 for sig in Test[f"Predicted_{indice_choice}"]]

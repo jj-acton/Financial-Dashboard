@@ -52,7 +52,7 @@ class MovingAverageStrategy:
     
     def fetch_yf_data(self):
         try:
-            self.data = yf.download(self.ticker, start=self.date_range[0], end=self.date_range[1])
+            self.data = yf.download(self.ticker, start=self.date_range[0], end=self.date_range[1])#type:ignore
             if self.data is None or self.data.empty:
                 st.error("Data could not be fetched. Check date range or ticker.")
                 self.data = None

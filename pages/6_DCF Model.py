@@ -109,7 +109,7 @@ st.latex(r"""
     \text{Cost of Equity} = \text{Risk Free Rate} + (\text{Beta} \times (\text{Expected Market Return - Risk Free Rate}))
 """)
 
-ticker = yf.Ticker("NEE")
+ticker = yf.Ticker("NEE")#type:ignore
 current_stock_price = ticker.history(period = "1d")["Close"].iloc[-1]
 shares_outstanding = ticker.info.get("sharesOutstanding", None)
 market_cap = ticker.info.get("marketCap", None)
