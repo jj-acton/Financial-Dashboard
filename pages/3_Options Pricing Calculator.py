@@ -1,3 +1,5 @@
+import os
+os.environ["YFINANCE_NO_CACHE"] = "1"
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
