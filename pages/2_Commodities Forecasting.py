@@ -442,7 +442,7 @@ st.pyplot(fig)
 #Convert timestamp to DDMMYYYY
 date_str = future_with_features["Date"].iloc[-1].date().strftime('%d/%m/%Y')
 
-st.subheader(f"Using the XGBoost model we can see that the model predicts the price of {option} will be ${future_with_features['Future Prediction'].iloc[-1]:.2f} on the {date_str} using a lookback training period of {lookback}.")
+st.subheader(f"Using the XGBoost model we can see that the model predicts the price of {option} will be ${future_with_features['Future Prediction'].iloc[-1]:.2f} {unit} on the {date_str} using a lookback training period of {lookback}.")
 
 st.subheader("Limitations", divider=DIVIDER_COLOUR)
 justified_text("While the XGBoost model captures short and medium-term trends using engineered lag features, it is still prone to cumulative bias in sequential predictions and may overfit to recent patterns in certain folds. The model assumes feature stability over time, which may not hold during structural shifts or periods of high volatility. It also does not account for market sentiment, speculation, or external shocks, which can significantly influence price movements.")
