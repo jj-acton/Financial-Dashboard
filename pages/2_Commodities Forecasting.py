@@ -92,7 +92,7 @@ else:
     #Remove any close prices without data
     history = history.dropna(subset=["Close"])
     most_recent_close = history["Close"].dropna().iloc[-1]
-    most_recent_date = history["Close"].dropna().index[-1].date()
+    most_recent_date = history["Close"].dropna().index[-1].date()#type:ignore
     st.write(f"Latest available price: ${most_recent_close:.2f} (from {most_recent_date})")
 
 col1.metric(label=f"Close Price", value=f"${most_recent_close:.2f}",)
