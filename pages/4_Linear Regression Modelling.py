@@ -11,6 +11,7 @@ from datetime import datetime
 from pandas.plotting import scatter_matrix
 from statsmodels.stats.stattools import durbin_watson, jarque_bera
 
+
 st.set_page_config(
                 page_title="Linear Regression model",
                 page_icon="📚",

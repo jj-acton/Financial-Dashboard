@@ -13,5 +13,6 @@ alpaca-py
 xgboost
 openai
 scikit-learn
+watchdog
 
 
