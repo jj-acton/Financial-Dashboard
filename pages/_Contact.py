@@ -1,30 +1,26 @@
 import streamlit as st
-import sqlite3
+import pymysql
 
-st.set_page_config(
-    page_title="Contact",
-    page_icon="📧",
-    initial_sidebar_state="auto",
-    layout="wide"
+conn = pymysql.connect(
+    host='database-1-finacial-dashboard-contact-page.ctkey4424y8v.eu-west-2.rds.amazonaws.com',
+    user='admin',
+    password='8F6hrdEjmCEo4NAAtEV3',
+    db='database-1-finacial-dashboard-contact-page',
+    charset='utf8mb4',
+    cursorclass=pymysql.cursors.DictCursor
 )
 
-st.title("Contact Us")
-
-conn = sqlite3.connect("contact_data.db")
-c = conn.cursor()
-
-c.execute(
-    """
-    CREATE TABLE IF NOT EXISTS contacts (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT,
-        email TEXT,
-        company TEXT,
-        message TEXT
-    )
-    """
-)
-conn.commit()
+with conn.cursor() as cursor:
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS contacts (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(255),
+            email VARCHAR(255),
+            company VARCHAR(255),
+            message TEXT
+        )
+    """)
+    conn.commit()
 
 with st.form(key="contact_form" ,clear_on_submit=True, enter_to_submit=False):
     name = st.text_input("Full Name")
@@ -34,9 +30,11 @@ with st.form(key="contact_form" ,clear_on_submit=True, enter_to_submit=False):
     
     submitted = st.form_submit_button("Submit")
     
-    if submitted : 
-        c.execute("INSERT INTO contacts (name, email, company, message) VALUES (?, ?, ?, ?)", (name, email, company, message))
-        conn.commit()
-        st.success("Your message has been sent. Thank You!")
+    if submitted:
+        with conn.cursor() as cursor:
+            sql = "INSERT INTO contacts (name, email, company, message) VALUES (%s, %s, %s, %s)"
+            cursor.execute(sql, (name, email, company, message))
+            conn.commit()
+        st.success("Your message has been sent. Thank you!")
 
 conn.close()

@@ -14,5 +14,5 @@ xgboost
 openai
 scikit-learn
 watchdog
-
+pymysql
 
