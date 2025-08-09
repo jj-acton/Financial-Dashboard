@@ -2,12 +2,15 @@ import streamlit as st
 import pymysql
 
 KEY = st.secrets["MySQL"]["key"]
+HOST = st.secrets["MySQL"]["host"]
+USER = st.secrets["MySQL"]["user"]
+DB = st.secrets["MySQL"]["db"]
 
 conn = pymysql.connect(
-    host='database-1-finacial-dashboard-contact-page.ctkey4424y8v.eu-west-2.rds.amazonaws.com',
-    user='admin',
+    host=HOST,
+    user=USER,
     password= KEY,
-    db='database-1-finacial-dashboard-contact-page',
+    db=DB,
     charset='utf8mb4',
     cursorclass=pymysql.cursors.DictCursor
 )
