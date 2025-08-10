@@ -15,4 +15,4 @@ openai
 scikit-learn
 watchdog
 pymysql
-
+boto3
