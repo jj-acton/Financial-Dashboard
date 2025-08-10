@@ -11,7 +11,7 @@ from datetime import datetime
 import yfinance as yf
 
 st.set_page_config(page_title="Stock Analysis",
-                page_icon="📙",
+                page_icon="💻",
                 initial_sidebar_state="auto",
                 layout="wide"
                 )

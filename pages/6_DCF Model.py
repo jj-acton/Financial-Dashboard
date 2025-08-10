@@ -9,6 +9,7 @@ import re
 
 DIVIDER_COLOUR = "blue"
 API_KEY = st.secrets["OpenAI"]["api_key"]
+
 st.set_page_config(page_title="DCF Model",
                 page_icon="📝",
                 initial_sidebar_state="auto",

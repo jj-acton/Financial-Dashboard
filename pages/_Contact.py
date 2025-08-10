@@ -3,6 +3,13 @@ import pymysql
 import boto3
 from botocore.exceptions import ClientError
 
+st.set_page_config(
+    page_title="Contact me",
+    layout= 'wide',
+    page_icon="📧",
+    initial_sidebar_state="auto"
+)
+
 PASSWORD = st.secrets["MySQL"]["password"]
 HOST = st.secrets["MySQL"]["host"]
 USER = st.secrets["MySQL"]["user"]
@@ -16,10 +23,10 @@ def get_connection():
         password=PASSWORD,
         db=DB,
         charset='utf8mb4',
-        cursorclass=pymysql.cursors.DictCursor
+        cursorclass=pymysql.cursors.DictCursor #result is returned as dict
     )
 
-sns_client = boto3.client('sns', region_name='eu-west-2')  # Adjust region if needed
+sns_client = boto3.client('sns', region_name='eu-west-2') 
 
 def send_sns_notification(subject, message):
     try:
@@ -38,7 +45,7 @@ with get_connection() as conn:
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS contacts (
                 id INT AUTO_INCREMENT PRIMARY KEY,
-                name VARCHAR(255),
+                name VARCHAR(255), 
                 email VARCHAR(255),
                 company VARCHAR(255),
                 message TEXT
@@ -57,10 +64,9 @@ with st.form(key="contact_form", clear_on_submit=True, enter_to_submit=False):
     if submitted:
         with get_connection() as conn:
             with conn.cursor() as cursor:
-                sql = "INSERT INTO contacts (name, email, company, message) VALUES (%s, %s, %s, %s)"
+                sql = "INSERT INTO contacts (name, email, company, message) VALUES (%s, %s, %s, %s)"#placeholder
                 cursor.execute(sql, (name, email, company, message))
                 conn.commit()
-
         subject = f"New Contact Form Submission from {name}"
         body = f"Name: {name}\nEmail: {email}\nCompany: {company}\nMessage:\n{message}"
         send_sns_notification(subject, body)

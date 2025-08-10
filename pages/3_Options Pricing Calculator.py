@@ -9,7 +9,7 @@ from matplotlib.colors import TwoSlopeNorm
 
 st.set_page_config(
                 page_title="Black Scholes Model",
-                page_icon=":chart_with_upwards_trend:",
+                page_icon="📈",
                 layout="wide",
                 initial_sidebar_state="auto"
                 )

@@ -16,7 +16,7 @@ import re
 st.set_page_config(
     page_title="Commodities Forecasting",
     layout= 'wide',
-    page_icon="🛢️",
+    page_icon="🌾",
     initial_sidebar_state="auto"
 )
 plt.style.use('dark_background')
