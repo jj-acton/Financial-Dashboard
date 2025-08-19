@@ -10,6 +10,8 @@ st.set_page_config(
     initial_sidebar_state="auto"
 )
 
+st.title("Contact Me")
+
 PASSWORD = st.secrets["MySQL"]["password"]
 HOST = st.secrets["MySQL"]["host"]
 USER = st.secrets["MySQL"]["user"]

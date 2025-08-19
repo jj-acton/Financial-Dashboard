@@ -89,7 +89,7 @@ with col2:
 justified_text("The ACF plot shows strong positive correlations that decay slowly over time, indicating that past values influence future values for many periods. The PACF plot displays a significant spike only at lag 1, suggesting that correlations at higher lags are mostly indirect. This pattern is typical of a non-stationary random walk, where shocks have a lasting impact and the series does not revert quickly to a stable mean.")
 st.write("---")
 st.subheader("ADF Method")
-st.markdown("The ADF (Augmented Dickey-Fuller) test checks whether a time series has a unit root, indicating non-stationarity. The null hypothesis states that the series is non-stationary. If the $p$-value is greater than 0.05 (at 95\% confidence), we fail to reject the null hypothesis and conclude the data is likely non-stationary.")
+st.markdown("The ADF (Augmented Dickey-Fuller) test checks whether a time series has a unit root, indicating non-stationarity. The null hypothesis states that the series is non-stationary. If the $p$-value is greater than 0.05 (at 95% confidence), we fail to reject the null hypothesis and conclude the data is likely non-stationary.")
 
 adf_test = adfuller(df_train)
 st.subheader(f"$p$-value : {adf_test[1]:.3f}")
@@ -102,7 +102,7 @@ st.subheader("")
 
 df_train_diff = df_train.diff().dropna()
 fig, ax = plt.subplots(figsize=(10,6))
-df_train_diff.plot(x="Date", y=df_train_diff, ax=ax, title="Transforming Non-Stationary Data to Stationary Using Log Returns")
+df_train_diff.plot(x="Date", y=df_train_diff, ax=ax, title="Transforming Non-Stationary Data to Stationary Using Log Returns")#type:ignore
 ax.set_xlabel("Index")
 ax.set_ylabel("Log Return")
 plt.axhline(linestyle = "--")
@@ -196,3 +196,5 @@ st.markdown("""
 - More advanced models like GARCH or BVAR could capture volatility clustering and variable interactions better.
 - Overall, this ARIMA model provides a solid baseline forecast but may miss sudden market shifts due to its linear nature.
 """)
+
+st.header("GARCH and BVAR models coming soon...")
